@@ -1,0 +1,7 @@
+name: SpawnerMechanics
+version: ${project.version}
+main: com.github.frcsty.spawnermechanics.SpawnerMechanics
+
+commands:
+  mobs-clear:
+
