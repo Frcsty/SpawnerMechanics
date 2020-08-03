@@ -1,15 +1,29 @@
 package com.github.frcsty.spawnermechanics.api.drop;
 
 import com.github.frcsty.spawnermechanics.object.Drop;
-import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public interface EntityDrop {
+public final class EntityDrop {
 
-    List<Drop> getDrops();
+    private static final List<Drop> DROPS = new ArrayList<>();
 
-    void addDrops(Drop... drops);
+    public EntityDrop(final Drop... drops) {
+        DROPS.addAll(Arrays.asList(drops));
+    }
 
-    void clearDrops();
+    public void addDrops(final Drop... drops) {
+        DROPS.addAll(Arrays.asList(drops));
+    }
+
+    public void clearDrops() {
+        DROPS.clear();
+    }
+
+    public List<Drop> getDrops() {
+        return DROPS;
+    }
+
 }

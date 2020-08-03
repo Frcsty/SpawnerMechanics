@@ -1,5 +1,6 @@
 package com.github.frcsty.spawnermechanics.api;
 
+import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrops;
 import com.github.frcsty.spawnermechanics.api.runnable.Activation;
 import com.github.frcsty.spawnermechanics.api.storage.PersistentStorage;
@@ -10,31 +11,39 @@ import java.util.Optional;
 
 public final class SpawnerWrapper {
 
-    private static final PersistentStorage STORAGE = new PersistentStorage();
-    private static final Activation ACTIVATION = new Activation();
-    private static final EntityDrops ENTITY_DROPS = new EntityDrops();
+    private final PersistentStorage storage = new PersistentStorage();
+    private final Activation activation = new Activation();
+    private final EntityDrops entityDrops = new EntityDrops();
 
     public void addSpawner(final Spawner spawner) {
-        STORAGE.getSpawners().add(spawner);
+        storage.getSpawners().add(spawner);
     }
 
     public Optional<Spawner> getSpawner(final Location location) {
-        return STORAGE.getSpawners().stream().filter(spawner -> spawner.getLocation().equals(location)).findAny();
+        return storage.getSpawners().stream().filter(spawner -> spawner.getLocation().equals(location)).findAny();
     }
 
     public void removeSpawner(final Spawner spawner) {
-        STORAGE.getSpawners().remove(spawner);
+        storage.getSpawners().remove(spawner);
+    }
+
+    public EntityDrop getEntityDrop(final String identifier) {
+        return entityDrops.getEntityDrops().get(identifier);
+    }
+
+    public void setEntityDrop(final String identifier, final EntityDrop drop) {
+        entityDrops.getEntityDrops().put(identifier, drop);
     }
 
     public PersistentStorage getStorage() {
-        return STORAGE;
+        return storage;
     }
 
     public Activation getActivation() {
-        return ACTIVATION;
+        return activation;
     }
 
     public EntityDrops getEntityDrops() {
-        return ENTITY_DROPS;
+        return entityDrops;
     }
 }

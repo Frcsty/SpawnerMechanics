@@ -35,7 +35,7 @@ public final class Activation {
                         entity.setMetadata(Identifier.MOB_TYPE, new FixedMetadataValue(plugin, spawner.getType().name()));
                         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
                         // TODO: Custom Entity
-                        entity.setCustomName(batch + "x " + StringUtils.capitalize(spawner.getType().name()));
+                        entity.setCustomName(batch + "x " + StringUtils.capitalize(spawner.getType().name().toLowerCase()));
                     }
 
                     REMOVAL_QUEUE.add(spawner);
