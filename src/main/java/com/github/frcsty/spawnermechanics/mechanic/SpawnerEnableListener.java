@@ -19,7 +19,7 @@ public final class SpawnerEnableListener implements Listener {
             SpawnerMechanics.WRAPPER.addSpawner(new Spawner(spawner.getLocation(), spawner.getSpawnedType(), 1));
         }
 
-        Bukkit.broadcastMessage("Spawner Spawn Event Triggered!");
+        //Bukkit.broadcastMessage("Spawner Spawn Event Triggered!");
         event.setCancelled(true);
     }
 }

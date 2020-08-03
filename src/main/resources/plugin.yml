@@ -4,4 +4,5 @@ main: com.github.frcsty.spawnermechanics.SpawnerMechanics
 
 commands:
   mobs-clear:
+  mobs-clear-cache:
 

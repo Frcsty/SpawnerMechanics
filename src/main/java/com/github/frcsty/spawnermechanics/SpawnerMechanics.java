@@ -1,9 +1,7 @@
 package com.github.frcsty.spawnermechanics;
 
 import com.github.frcsty.spawnermechanics.api.SpawnerWrapper;
-import com.github.frcsty.spawnermechanics.mechanic.SpawnerEnableListener;
-import com.github.frcsty.spawnermechanics.mechanic.SpawnerPlaceListener;
-import com.github.frcsty.spawnermechanics.mechanic.SpawnerStackListener;
+import com.github.frcsty.spawnermechanics.mechanic.*;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,15 +20,20 @@ public final class SpawnerMechanics extends JavaPlugin implements CommandExecuto
     @Override
     public void onEnable() {
         getCommand("mobs-clear").setExecutor(this);
+        getCommand("mobs-clear-cache").setExecutor(this);
 
         registerListeners(
                 new SpawnerEnableListener(),
                 new SpawnerPlaceListener(),
-                new SpawnerStackListener()
+                new SpawnerStackListener(),
+
+                new MobSpawnListener(this),
+                new MobDeathListener(this)
         );
 
         WRAPPER.getStorage().load();
         WRAPPER.getActivation().run();
+        WRAPPER.getEntityDrops().loadDefault();
     }
 
     @Override
@@ -46,18 +49,29 @@ public final class SpawnerMechanics extends JavaPlugin implements CommandExecuto
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         final Player player = (Player) sender;
         final World world = player.getWorld();
+        final long current = System.currentTimeMillis();
 
-        int amount = 0;
-        for (final Entity entity : world.getEntities()) {
-            if (entity instanceof Player) {
-                continue;
+        if (command.getName().equalsIgnoreCase("mobs-clear")) {
+            int amount = 0;
+            for (final Entity entity : world.getEntities()) {
+                if (entity instanceof Player) {
+                    continue;
+                }
+
+                entity.remove();
+                amount++;
             }
 
-            entity.remove();
-            amount++;
+            player.sendMessage("Removed " + amount + " entities! (Took: " + (System.currentTimeMillis() - current) + "ms)");
+            return true;
+        }
+        if (command.getName().equalsIgnoreCase("mobs-clear-cache")) {
+            WRAPPER.getStorage().getSpawners().clear();
+            player.sendMessage("Cleared spawner storage cache! (Took: " + (System.currentTimeMillis() - current) + "ms)");
+            return true;
         }
 
-        player.sendMessage("Removed " + amount + " entities!");
         return true;
     }
+
 }

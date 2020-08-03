@@ -4,6 +4,7 @@ import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import com.github.frcsty.spawnermechanics.util.ItemNBT;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -42,6 +43,7 @@ public final class SpawnerPlaceListener implements Listener {
             spawner = Optional.of(new Spawner(block.getLocation(), EntityType.valueOf(type.toUpperCase()), 1));
         }
 
+        Bukkit.broadcastMessage("Added a spawner to the world.");
         SpawnerMechanics.WRAPPER.addSpawner(spawner.get());
     }
 

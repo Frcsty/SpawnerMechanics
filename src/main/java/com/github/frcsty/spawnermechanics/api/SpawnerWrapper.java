@@ -1,5 +1,6 @@
 package com.github.frcsty.spawnermechanics.api;
 
+import com.github.frcsty.spawnermechanics.api.drop.EntityDrops;
 import com.github.frcsty.spawnermechanics.api.runnable.Activation;
 import com.github.frcsty.spawnermechanics.api.storage.PersistentStorage;
 import com.github.frcsty.spawnermechanics.object.Spawner;
@@ -11,6 +12,7 @@ public final class SpawnerWrapper {
 
     private static final PersistentStorage STORAGE = new PersistentStorage();
     private static final Activation ACTIVATION = new Activation();
+    private static final EntityDrops ENTITY_DROPS = new EntityDrops();
 
     public void addSpawner(final Spawner spawner) {
         STORAGE.getSpawners().add(spawner);
@@ -30,5 +32,9 @@ public final class SpawnerWrapper {
 
     public Activation getActivation() {
         return ACTIVATION;
+    }
+
+    public EntityDrops getEntityDrops() {
+        return ENTITY_DROPS;
     }
 }

@@ -1,8 +1,10 @@
 package com.github.frcsty.spawnermechanics.api.runnable;
 
+import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.api.calculation.EntitySpawn;
 import com.github.frcsty.spawnermechanics.object.Spawner;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -10,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 public final class Activation {
 
@@ -29,20 +32,20 @@ public final class Activation {
                         final int batch = spawn.getMobSpawns().get(location);
                         final Entity entity = location.getWorld().spawnEntity(location, spawner.getType());
 
-                        entity.setMetadata("mob-type", new FixedMetadataValue(plugin, spawner.getType().name()));
-                        entity.setMetadata("mob-amount", new FixedMetadataValue(plugin, batch));
-
-                        //entity.setFireTicks(10);
+                        entity.setMetadata(Identifier.MOB_TYPE, new FixedMetadataValue(plugin, spawner.getType().name()));
+                        entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
                         // TODO: Custom Entity
-                        entity.setCustomName("Stack Amount: " + batch);
+                        entity.setCustomName(batch + "x " + StringUtils.capitalize(spawner.getType().name()));
                     }
 
                     REMOVAL_QUEUE.add(spawner);
                 });
 
-                for (final Spawner spawner : REMOVAL_QUEUE) {
-                    SpawnerMechanics.WRAPPER.removeSpawner(spawner);
+                final ListIterator<Spawner> iterator = REMOVAL_QUEUE.listIterator();
+                if (iterator.hasNext()) {
+                    final Spawner spawner = iterator.next();
 
+                    SpawnerMechanics.WRAPPER.removeSpawner(spawner);
                     REMOVAL_QUEUE.removeFirst();
                 }
             }
