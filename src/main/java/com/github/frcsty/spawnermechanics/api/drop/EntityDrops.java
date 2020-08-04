@@ -9,23 +9,25 @@ import java.util.Map;
 
 public final class EntityDrops {
 
-    private static final Map<String, EntityDrop> ENTITY_DROPS = new HashMap<>();
+    private final Map<String, EntityDrop> entityDrops = new HashMap<>();
 
     public void loadDefault() {
-        ENTITY_DROPS.put("ZOMBIE", new EntityDrop(
-                new Drop().withDrop(new ItemStack(Material.ROTTEN_FLESH, 3), 60).withDrop(new ItemStack(Material.IRON_INGOT, 1), 30)
+        entityDrops.put("ZOMBIE", new EntityDrop(
+                new Drop().withDrop(new ItemStack(Material.ROTTEN_FLESH, 3), 60)
+                        .withDrop(new ItemStack(Material.IRON_INGOT, 1), 30)
         ));
 
-        ENTITY_DROPS.put("PIG", new EntityDrop(
-                new Drop().withDrop(new ItemStack(Material.PORK, 2), 100).withDrop(new ItemStack(Material.SUGAR, 1), 35)
+        entityDrops.put("PIG", new EntityDrop(
+                new Drop().withDrop(new ItemStack(Material.PORK, 2), 100)
+                        .withDrop(new ItemStack(Material.SUGAR, 1), 35)
         ));
 
-        ENTITY_DROPS.put("SKELETON", new EntityDrop(
+        entityDrops.put("SKELETON", new EntityDrop(
                 new Drop().withDrop(new ItemStack(Material.ARROW, 2), 60)
         ));
     }
 
     public Map<String, EntityDrop> getEntityDrops() {
-        return ENTITY_DROPS;
+        return this.entityDrops;
     }
 }

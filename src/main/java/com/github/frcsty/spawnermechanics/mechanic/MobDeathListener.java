@@ -5,7 +5,6 @@ import com.github.frcsty.spawnermechanics.Setting;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -70,12 +69,8 @@ public final class MobDeathListener implements Listener {
         if (drop == null) {
             return;
         }
-        Bukkit.broadcastMessage("Drop Type: " + typeString);
-        drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops().forEach(loot -> {
-            Bukkit.broadcastMessage(" > " + loot.getType());
-
-            entity.getWorld().dropItemNaturally(entity.getLocation(), loot);
-        }));
+        drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops(true).forEach(loot ->
+                entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
         entity.setCustomName(batch + "x " + StringUtils.capitalize(typeString.toLowerCase()));
     }
 
@@ -110,7 +105,8 @@ public final class MobDeathListener implements Listener {
         if (drop == null) {
             return;
         }
-        drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops().forEach(loot -> entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
+        drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops(true).forEach(loot ->
+                entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
         entity.setCustomName(batch + "x " + StringUtils.capitalize(typeString.toLowerCase()));
     }
 }

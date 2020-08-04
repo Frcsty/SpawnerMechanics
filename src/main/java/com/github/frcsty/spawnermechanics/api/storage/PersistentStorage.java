@@ -44,7 +44,7 @@ public final class PersistentStorage {
             final int amount = Integer.valueOf(argumentedParameters[0]);
             final EntityType type = EntityType.valueOf(argumentedParameters[1]);
 
-            SPAWNERS.add(new Spawner(location, type, amount));
+            SPAWNERS.add(new Spawner(location, argumentedParameters[2], type, amount));
         }
         if (!file.delete()) {
             plugin.getLogger().log(Level.WARNING, "Failed to delete 'locations.yml' file!");
@@ -60,7 +60,7 @@ public final class PersistentStorage {
             final Location location = spawner.getLocation();
             final String localizedLocation = location.getWorld().getName() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
 
-            fileConfig.set("spawners." + localizedLocation, spawner.getStack() + ";" + spawner.getType());
+            fileConfig.set("spawners." + localizedLocation, spawner.getStack() + ";" + spawner.getType() + ";" + spawner.getMobType());
         }
 
         try {

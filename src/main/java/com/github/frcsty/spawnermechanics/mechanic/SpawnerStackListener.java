@@ -47,7 +47,7 @@ public final class SpawnerStackListener implements Listener {
             return;
         }
 
-        final EntityType entityType = EntityType.valueOf(type.toUpperCase());
+        final EntityType entityType = SpawnerMechanics.WRAPPER.getSpawnerType(type.toUpperCase());
         final CreatureSpawner creatureSpawner = (CreatureSpawner) clicked.getState();
         if (creatureSpawner.getSpawnedType() != entityType) {
             return;
@@ -60,7 +60,7 @@ public final class SpawnerStackListener implements Listener {
 
         final Optional<Spawner> spawner = SpawnerMechanics.WRAPPER.getSpawner(clicked.getLocation());
         if (!spawner.isPresent()) {
-            SpawnerMechanics.WRAPPER.addSpawner(new Spawner(clicked.getLocation(), entityType, amount));
+            SpawnerMechanics.WRAPPER.addSpawner(new Spawner(clicked.getLocation(),type, entityType, amount));
         } else {
             SpawnerMechanics.WRAPPER.removeSpawner(spawner.get());
             spawner.get().addAmount(amount);

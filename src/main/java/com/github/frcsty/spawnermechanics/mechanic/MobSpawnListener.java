@@ -4,7 +4,6 @@ import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.Setting;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +53,6 @@ public final class MobSpawnListener implements Listener {
             }
 
             final List<MetadataValue> type = entity.getMetadata(Identifier.MOB_TYPE);
-
             if (type.size() == 0) {
                 return false;
             }
@@ -70,7 +68,6 @@ public final class MobSpawnListener implements Listener {
                 }
 
                 if (batch >= Setting.MAX_MOB_STACK) {
-                    Bukkit.broadcastMessage(batch + "");
                     batch = Setting.MAX_MOB_STACK;
                 }
                 entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));

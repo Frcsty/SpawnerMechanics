@@ -1,11 +1,15 @@
 package com.github.frcsty.spawnermechanics;
 
 import com.github.frcsty.spawnermechanics.api.SpawnerWrapper;
+import com.github.frcsty.spawnermechanics.command.SpawnerGiveCommand;
+import com.github.frcsty.spawnermechanics.command.temp.MobsClearCommand;
+import com.github.frcsty.spawnermechanics.command.temp.SpawnerCacheClearCommand;
 import com.github.frcsty.spawnermechanics.mechanic.*;
+import me.mattstudios.mf.base.CommandBase;
+import me.mattstudios.mf.base.CommandManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Warning;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -13,19 +17,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 
-public final class SpawnerMechanics extends JavaPlugin implements CommandExecutor {
+public final class SpawnerMechanics extends JavaPlugin {
 
     public static final SpawnerWrapper WRAPPER = new SpawnerWrapper();
 
     @Override
     public void onEnable() {
-        getCommand("mobs-clear").setExecutor(this);
-        getCommand("mobs-clear-cache").setExecutor(this);
+        registerCommands(
+                new MobsClearCommand(),
+                new SpawnerCacheClearCommand(),
+
+                new SpawnerGiveCommand()
+        );
 
         registerListeners(
                 new SpawnerEnableListener(),
                 new SpawnerPlaceListener(),
                 new SpawnerStackListener(),
+                new SpawnerBreakListener(),
 
                 new MobSpawnListener(this),
                 new MobDeathListener(this)
@@ -34,44 +43,33 @@ public final class SpawnerMechanics extends JavaPlugin implements CommandExecuto
         WRAPPER.getStorage().load();
         WRAPPER.getActivation().run();
         WRAPPER.getEntityDrops().loadDefault();
+        WRAPPER.getSpawnerTypes().loadDefaults();
     }
 
     @Override
     public void onDisable() {
         WRAPPER.getStorage().save();
-    }
 
-    private void registerListeners(final Listener... listeners) {
-        Arrays.stream(listeners).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        final Player player = (Player) sender;
-        final World world = player.getWorld();
-        final long current = System.currentTimeMillis();
-
-        if (command.getName().equalsIgnoreCase("mobs-clear")) {
-            int amount = 0;
+        for (final World world : Bukkit.getWorlds()) {
             for (final Entity entity : world.getEntities()) {
                 if (entity instanceof Player) {
                     continue;
                 }
 
                 entity.remove();
-                amount++;
             }
-
-            player.sendMessage("Removed " + amount + " entities! (Took: " + (System.currentTimeMillis() - current) + "ms)");
-            return true;
         }
-        if (command.getName().equalsIgnoreCase("mobs-clear-cache")) {
-            WRAPPER.getStorage().getSpawners().clear();
-            player.sendMessage("Cleared spawner storage cache! (Took: " + (System.currentTimeMillis() - current) + "ms)");
-            return true;
-        }
+    }
 
-        return true;
+    private void registerListeners(final Listener... listeners) {
+        Arrays.stream(listeners).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
+    }
+
+    @Warning(reason = "Only ever generate one command manager!")
+    private void registerCommands(final CommandBase... commands) {
+        final CommandManager manager = new CommandManager(this);
+
+        Arrays.stream(commands).forEach(manager::register);
     }
 
 }

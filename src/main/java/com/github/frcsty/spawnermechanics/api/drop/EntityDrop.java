@@ -8,22 +8,22 @@ import java.util.List;
 
 public final class EntityDrop {
 
-    private static final List<Drop> DROPS = new ArrayList<>();
+    private final List<Drop> drops = new ArrayList<>();
 
     public EntityDrop(final Drop... drops) {
-        DROPS.addAll(Arrays.asList(drops));
+        this.drops.addAll(Arrays.asList(drops));
     }
 
     public void addDrops(final Drop... drops) {
-        DROPS.addAll(Arrays.asList(drops));
+        this.drops.addAll(Arrays.asList(drops));
     }
 
     public void clearDrops() {
-        DROPS.clear();
+        drops.clear();
     }
 
     public List<Drop> getDrops() {
-        return DROPS;
+        return drops;
     }
 
 }

@@ -4,8 +4,10 @@ import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrops;
 import com.github.frcsty.spawnermechanics.api.runnable.Activation;
 import com.github.frcsty.spawnermechanics.api.storage.PersistentStorage;
+import com.github.frcsty.spawnermechanics.api.type.SpawnerTypes;
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ public final class SpawnerWrapper {
     private final PersistentStorage storage = new PersistentStorage();
     private final Activation activation = new Activation();
     private final EntityDrops entityDrops = new EntityDrops();
+    private final SpawnerTypes spawnerTypes = new SpawnerTypes();
 
     public void addSpawner(final Spawner spawner) {
         storage.getSpawners().add(spawner);
@@ -35,15 +38,28 @@ public final class SpawnerWrapper {
         entityDrops.getEntityDrops().put(identifier, drop);
     }
 
+    public void setSpawnerType(final String identifier, final EntityType mobType) {
+        this.spawnerTypes.getTypes().put(identifier, mobType);
+    }
+
+    public EntityType getSpawnerType(final String identifier) {
+        return this.spawnerTypes.getTypes().get(identifier);
+    }
+
     public PersistentStorage getStorage() {
-        return storage;
+        return this.storage;
     }
 
     public Activation getActivation() {
-        return activation;
+        return this.activation;
     }
 
     public EntityDrops getEntityDrops() {
-        return entityDrops;
+        return this.entityDrops;
     }
+
+    public SpawnerTypes getSpawnerTypes() {
+        return this.spawnerTypes;
+    }
+
 }

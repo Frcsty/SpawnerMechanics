@@ -7,6 +7,7 @@ import com.github.frcsty.spawnermechanics.util.ItemNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,11 +40,13 @@ public final class SpawnerPlaceListener implements Listener {
         }
 
         Optional<Spawner> spawner = SpawnerMechanics.WRAPPER.getSpawner(block.getLocation());
+        final EntityType entityType = SpawnerMechanics.WRAPPER.getSpawnerType(type.toUpperCase());
         if (!spawner.isPresent()) {
-            spawner = Optional.of(new Spawner(block.getLocation(), EntityType.valueOf(type.toUpperCase()), 1));
+            spawner = Optional.of(new Spawner(block.getLocation(), type, entityType, 1));
         }
 
-        Bukkit.broadcastMessage("Added a spawner to the world.");
+        final CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
+        creatureSpawner.setSpawnedType(entityType);
         SpawnerMechanics.WRAPPER.addSpawner(spawner.get());
     }
 
