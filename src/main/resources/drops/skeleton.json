@@ -1,0 +1,9 @@
+{
+  "drops": {
+    "arrow": {
+      "material": "ARROW",
+      "amount": 2,
+      "chance": 60
+    }
+  }
+}

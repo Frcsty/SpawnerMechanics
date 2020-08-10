@@ -3,16 +3,17 @@ package com.github.frcsty.spawnermechanics.mechanic;
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.Setting;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.entity.*;
+import com.github.frcsty.spawnermechanics.mechanic.event.CustomMobSpawnEvent;
+import com.github.frcsty.spawnermechanics.object.CustomEntity;
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class MobSpawnListener implements Listener {
 
@@ -23,64 +24,72 @@ public final class MobSpawnListener implements Listener {
     }
 
     @EventHandler
-    public void onMobSpawn(final EntitySpawnEvent event) {
-        final Entity spawnedEntity = event.getEntity();
+    public void onMobSpawn(final CustomMobSpawnEvent event) {
+        final CustomEntity spawned = event.getCustomEntity();
 
-        if (spawnedEntity instanceof Player) {
-            return;
-        }
+        final Map<Entity, Integer> eligibleEntities = new HashMap<>();
 
-        if (!(spawnedEntity instanceof Animals) && !(spawnedEntity instanceof Monster)) {
-            return;
-        }
-
-        final List<MetadataValue> startingData = spawnedEntity.getMetadata(Identifier.MOB_TYPE);
-        if (startingData.size() == 0) {
-            spawnedEntity.setMetadata(Identifier.MOB_TYPE, new FixedMetadataValue(plugin, spawnedEntity.getType().name()));
-        }
-
-        final List<MetadataValue> typeData = spawnedEntity.getMetadata(Identifier.MOB_TYPE);
-        final EntityType mobType = EntityType.valueOf(typeData.get(0).asString().toUpperCase());
-        final List<MetadataValue> amountData = spawnedEntity.getMetadata(Identifier.MOB_AMOUNT);
-        final int amount = amountData.size() == 0 ? 1 : amountData.get(0).asInt();
-        final Optional<Entity> stackEntity = spawnedEntity.getNearbyEntities(
+        spawned.getEntity().getNearbyEntities(
                 Setting.DISTANCE_X,
                 Setting.DISTANCE_Y,
                 Setting.DISTANCE_Z
-        ).stream().filter(entity -> {
-            if (entity.equals(spawnedEntity) || entity instanceof Player) {
-                return false;
+        ).forEach(entity -> {
+            if (entity.equals(spawned.getEntity())) {
+                return;
             }
 
-            final List<MetadataValue> type = entity.getMetadata(Identifier.MOB_TYPE);
-            if (type.size() == 0) {
-                return false;
+            final List<MetadataValue> types = entity.getMetadata(Identifier.MOB_TYPE);
+            if (types.size() == 0) {
+                return;
             }
 
-            final EntityType entityType = EntityType.valueOf(type.get(0).asString().toUpperCase());
-            if (entityType == mobType) {
-                final List<MetadataValue> batchAmount = entity.getMetadata(Identifier.MOB_AMOUNT);
-                final int rawBatch = batchAmount.size() == 0 ? 1 : batchAmount.get(0).asInt();
-                int batch = rawBatch + amount;
-
-                if (rawBatch >= Setting.MAX_MOB_STACK) {
-                    return false;
-                }
-
-                if (batch >= Setting.MAX_MOB_STACK) {
-                    batch = Setting.MAX_MOB_STACK;
-                }
-                entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
-                entity.setCustomName(batch + "x " + StringUtils.capitalize(entityType.name().toLowerCase()));
-                return true;
+            final String type = types.get(0).asString();
+            if (!type.equalsIgnoreCase(spawned.getMobType())) {
+                return;
             }
-            return false;
-        }).findAny();
 
-        if (!stackEntity.isPresent()) {
+            final List<MetadataValue> amounts = entity.getMetadata(Identifier.MOB_AMOUNT);
+            if (amounts.size() == 0) {
+                return;
+            }
+
+            final int amount = amounts.get(0).asInt();
+            eligibleEntities.put(entity, amount == 0 ? 1 : amount);
+        });
+
+        final List<Entity> sortedEligibleEntities = getSortedEntities(eligibleEntities);
+        if (sortedEligibleEntities.size() == 0) {
             return;
         }
 
-        spawnedEntity.remove();
+        final Entity entity = sortedEligibleEntities.get(0);
+
+        final List<MetadataValue> amounts = entity.getMetadata(Identifier.MOB_AMOUNT);
+        final int amount = amounts.get(0).asInt();
+
+        int remainder = 0;
+        int batch = amount == 0 ? spawned.getBatch() : amount + spawned.getBatch();
+        if (batch >= Setting.MAX_MOB_STACK) {
+            remainder = (amount + spawned.getBatch()) - Setting.MAX_MOB_STACK;
+            batch -= remainder;
+        }
+
+        if (remainder > 0) {
+            final CustomEntity newMob = new CustomEntity(spawned.getType(), remainder, spawned.getLocation(), spawned.getMobType());
+
+            newMob.spawn(false);
+        }
+
+        entity.setCustomName(batch + "x " + StringUtils.capitalize(entity.getMetadata(Identifier.MOB_TYPE).get(0).asString().toLowerCase()));
+        entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
+        spawned.getEntity().remove();
+    }
+
+    private List<Entity> getSortedEntities(final Map<Entity, Integer> input) {
+        final Map<Entity, Integer> sorted = input.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+
+        return new ArrayList<>(sorted.keySet());
     }
 }

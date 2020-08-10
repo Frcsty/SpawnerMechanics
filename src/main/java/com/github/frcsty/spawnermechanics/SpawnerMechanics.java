@@ -42,8 +42,9 @@ public final class SpawnerMechanics extends JavaPlugin {
 
         WRAPPER.getStorage().load();
         WRAPPER.getActivation().run();
-        WRAPPER.getEntityDrops().loadDefault();
         WRAPPER.getSpawnerTypes().loadDefaults();
+        WRAPPER.getEntityDrops().load();
+        WRAPPER.getEntityAttributes().load();
     }
 
     @Override

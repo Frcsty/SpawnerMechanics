@@ -1,0 +1,14 @@
+{
+  "drops": {
+    "pork": {
+      "material": "PORK",
+      "amount": 2,
+      "chance": 100
+    },
+    "sugar": {
+      "material": "SUGAR",
+      "amount": 1,
+      "chance": 30
+    }
+  }
+}

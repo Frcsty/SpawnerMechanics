@@ -1,0 +1,14 @@
+{
+  "drops": {
+    "flesh": {
+      "material": "ROTTEN_FLESH",
+      "amount": 3,
+      "chance": 60
+    },
+    "iron": {
+      "material": "IRON_INGOT",
+      "amount": 2,
+      "chance": 15
+    }
+  }
+}

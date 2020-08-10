@@ -1,30 +1,68 @@
 package com.github.frcsty.spawnermechanics.api.drop;
 
+import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Drop;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public final class EntityDrops {
 
     private final Map<String, EntityDrop> entityDrops = new HashMap<>();
 
-    public void loadDefault() {
-        entityDrops.put("ZOMBIE", new EntityDrop(
-                new Drop().withDrop(new ItemStack(Material.ROTTEN_FLESH, 3), 60)
-                        .withDrop(new ItemStack(Material.IRON_INGOT, 1), 30)
-        ));
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void load() {
+        final SpawnerMechanics plugin = JavaPlugin.getPlugin(SpawnerMechanics.class);
+        final File dropsDir = new File(plugin.getDataFolder() + "/drops");
+        if (!dropsDir.exists()) {
+            dropsDir.mkdir();
+        }
+        if (dropsDir.length() == 0) {
+            return;
+        }
 
-        entityDrops.put("PIG", new EntityDrop(
-                new Drop().withDrop(new ItemStack(Material.PORK, 2), 100)
-                        .withDrop(new ItemStack(Material.SUGAR, 1), 35)
-        ));
+        final File[] files = dropsDir.listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
 
-        entityDrops.put("SKELETON", new EntityDrop(
-                new Drop().withDrop(new ItemStack(Material.ARROW, 2), 60)
-        ));
+        for (final File dropFile : files) {
+            if (!dropFile.getName().contains(".json")) {
+                continue;
+            }
+
+            final EntityDrop entityDrop = new EntityDrop();
+            final JSONParser parser = new JSONParser();
+            try {
+                final Object parsed = parser.parse(new FileReader(dropFile.getPath()));
+                final JSONObject json = (JSONObject) parsed;
+                final JSONObject drops = (JSONObject) json.get("drops");
+
+                for (final Object dropObject : drops.keySet()) {
+                    final JSONObject object = (JSONObject) drops.get(dropObject);
+                    final Drop drop = new Drop().withDrop(
+                            Material.matchMaterial((String) object.get("material")),
+                            Integer.valueOf(object.get("amount").toString()),
+                            Integer.valueOf(object.get("chance").toString())
+                    );
+
+                    entityDrop.addDrops(drop);
+                }
+            } catch (ParseException | IOException ex) {
+                plugin.getLogger().log(Level.WARNING, "Failed to parse file " + dropFile.getName() + "!", ex);
+            }
+
+            entityDrops.put(dropFile.getName().split("\\.")[0].toUpperCase(), entityDrop);
+        }
     }
 
     public Map<String, EntityDrop> getEntityDrops() {

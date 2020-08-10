@@ -1,0 +1,9 @@
+{
+  "attributes": {
+    "health": 2,
+    "fire_tick": true,
+    "knockback": true,
+    "water_damage": true,
+    "stack_fall_damage": false
+  }
+}

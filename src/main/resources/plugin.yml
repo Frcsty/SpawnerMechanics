@@ -1,4 +1,4 @@
 name: SpawnerMechanics
-version: ${project.version}
+version: @version@
 main: com.github.frcsty.spawnermechanics.SpawnerMechanics
 

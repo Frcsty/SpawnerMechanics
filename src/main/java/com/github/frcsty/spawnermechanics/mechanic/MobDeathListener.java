@@ -1,7 +1,6 @@
 package com.github.frcsty.spawnermechanics.mechanic;
 
 import com.github.frcsty.spawnermechanics.Identifier;
-import com.github.frcsty.spawnermechanics.Setting;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
 import org.apache.commons.lang.StringUtils;
@@ -40,73 +39,45 @@ public final class MobDeathListener implements Listener {
 
     @EventHandler
     public void onFakeEntityDeathByEntity(final EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity)) {
-            return;
+        if (handle(event.getFinalDamage(), event.getEntity())) {
+            event.setCancelled(true);
         }
-        final LivingEntity entity = (LivingEntity) event.getEntity();
-        final List<MetadataValue> type = entity.getMetadata(Identifier.MOB_TYPE);
-        final List<MetadataValue> data = entity.getMetadata(Identifier.MOB_AMOUNT);
-
-        if (data.size() == 0) {
-            return;
-        }
-
-        if (event.getFinalDamage() < entity.getHealth()) {
-            return;
-        }
-
-        final int batch = data.get(0).asInt();
-        if (batch <= 1) {
-            return;
-        }
-
-        entity.setHealth(Setting.MAX_HEALTH);
-        event.setCancelled(true);
-        entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch - 1));
-
-        final String typeString = type.get(0).asString();
-        final EntityDrop drop = SpawnerMechanics.WRAPPER.getEntityDrop(typeString.toUpperCase());
-        if (drop == null) {
-            return;
-        }
-        drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops(true).forEach(loot ->
-                entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
-        entity.setCustomName(batch + "x " + StringUtils.capitalize(typeString.toLowerCase()));
     }
 
     @EventHandler
     public void onFakeEntityDeathByBlock(final EntityDamageByBlockEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity)) {
-            return;
+        if (handle(event.getFinalDamage(), event.getEntity())) {
+            event.setCancelled(true);
         }
-        final LivingEntity entity = (LivingEntity) event.getEntity();
+    }
+
+    private boolean handle(final double finalDamage, final Entity normalEntity) {
+        if (!(normalEntity instanceof LivingEntity)) {
+            return false;
+        }
+        final LivingEntity entity = (LivingEntity) normalEntity;
         final List<MetadataValue> type = entity.getMetadata(Identifier.MOB_TYPE);
         final List<MetadataValue> data = entity.getMetadata(Identifier.MOB_AMOUNT);
 
         if (data.size() == 0) {
-            return;
+            return false;
         }
 
-        if (event.getFinalDamage() < entity.getHealth()) {
-            return;
+        if (finalDamage < entity.getHealth()) {
+            return false;
         }
 
         final int batch = data.get(0).asInt();
-        if (batch <= 1) {
-            return;
-        }
-
-        entity.setHealth(Setting.MAX_HEALTH);
-        event.setCancelled(true);
+        entity.setHealth(entity.getMaxHealth());
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch - 1));
-        final String typeString = type.get(0).asString();
 
+        final String typeString = type.get(0).asString();
         final EntityDrop drop = SpawnerMechanics.WRAPPER.getEntityDrop(typeString);
-        if (drop == null) {
-            return;
+        if (drop != null) {
+            drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops(true).forEach(loot ->
+                    entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
         }
-        drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops(true).forEach(loot ->
-                entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
         entity.setCustomName(batch + "x " + StringUtils.capitalize(typeString.toLowerCase()));
+        return batch > 1;
     }
 }

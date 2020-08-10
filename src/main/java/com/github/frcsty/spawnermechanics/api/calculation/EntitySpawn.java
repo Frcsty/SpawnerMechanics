@@ -1,11 +1,9 @@
 package com.github.frcsty.spawnermechanics.api.calculation;
 
-import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,65 +11,90 @@ import java.util.SplittableRandom;
 
 public final class EntitySpawn {
 
-    private static final int BATCH_AMOUNT = 3;
+    private static final int BATCH_AMOUNT = 4;
     private static final int BATCH_SPAWN_AMOUNT = 4;
-    private static final int DEVIATION_AMOUNT = 5;
     private static final SplittableRandom RANDOM = new SplittableRandom();
-    private static final Map<Location, Integer> MOB_SPAWNS = new HashMap<>();
+    private final Map<Location, Integer> mobSpawns = new HashMap<>();
     private final Spawner spawner;
 
     public EntitySpawn(final Spawner spawner) {
         this.spawner = spawner;
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                calculateSpawns();
-            }
-        }.runTaskAsynchronously(JavaPlugin.getPlugin(SpawnerMechanics.class));
+        calculateSpawns();
     }
 
     private void calculateSpawns() {
         final Location baseLocation = spawner.getLocation();
-        final int batchAmount = RANDOM.nextInt(BATCH_AMOUNT);
-        final int total = RANDOM.nextInt(spawner.getStack()) + RANDOM.nextInt(BATCH_SPAWN_AMOUNT);
+        final int batchAmount = getBatchAmount();
+        final int total = getTotalSpawnAmount(spawner.getStack());
 
         if (total <= 0) {
             return;
         }
 
-        Bukkit.broadcastMessage("Total Spawn Amount: " + total);
+        final int remain = total % batchAmount;
+        Bukkit.broadcastMessage("Total Spawn Amount: " + total + " (" + remain + ")");
         for (int i = 0; i < batchAmount; i++) {
-            final int deviation = Integer.valueOf(getAddition() + RANDOM.nextInt(DEVIATION_AMOUNT));
-            final int batch = (total / batchAmount) + deviation;
-
+            int batch = (total / batchAmount);
+            if (i == 0 && total != 1) {
+                batch += remain;
+            }
             if (batch <= 0) {
                 continue;
             }
 
-            final Location location = baseLocation.clone();
-            location.setX(location.getBlockX() + getRandomX());
-            location.setZ(location.getBlockZ() + getRandomZ());
-
+            Location location = getRandomLocation(baseLocation.clone());
             Bukkit.broadcastMessage(" - Batch Spawn Amount: " + batch);
-            MOB_SPAWNS.put(location, batch);
+            if (mobSpawns.get(location) == null) {
+                mobSpawns.put(location, batch);
+            } else {
+                location = getRandomLocation(baseLocation.clone());
+
+                mobSpawns.put(location, batch);
+            }
         }
     }
 
-    private String getAddition() {
-        return RANDOM.nextInt(2) == 1 ? "+" : "-";
+    private int getBatchAmount() {
+        return RANDOM.nextInt(1, BATCH_AMOUNT);
     }
 
-    private double getRandomX() {
-        return RANDOM.nextInt(2) == 1 ? -1.5 : +1.5;
+    private int getTotalSpawnAmount(final int stack) {
+        return RANDOM.nextInt(1, stack + RANDOM.nextInt(1, BATCH_SPAWN_AMOUNT + 1));
     }
 
-    private double getRandomZ() {
-        return RANDOM.nextInt(2) == 1 ? -1.5 : +1.5;
+    private Location getRandomLocation(Location location) {
+        location.setX(location.getBlockX() + getRandomPosition());
+        location.setZ(location.getBlockZ() + getRandomPosition());
+
+        if (location.getWorld().getBlockAt(location).getType() != Material.AIR) {
+            location = getRandomLocation(spawner.getLocation());
+        }
+
+        return location;
+    }
+
+    private double getRandomPosition() {
+        final int random = RANDOM.nextInt(1, 4);
+
+        double deviation = 0;
+        switch (random) {
+            case 1:
+                deviation = 1.5;
+                break;
+            case 2:
+                deviation = 2;
+                break;
+            case 3:
+                deviation = 2.5;
+        }
+
+        final int position = RANDOM.nextInt(1, 3);
+        return position == 1 ? -deviation : +deviation;
     }
 
     public Map<Location, Integer> getMobSpawns() {
-        return MOB_SPAWNS;
+        return this.mobSpawns;
     }
 
 }

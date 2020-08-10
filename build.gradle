@@ -1,0 +1,38 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "java"
+}
+
+group = "com.github.frcsty"
+version = "1.0.0"
+
+def path = "com.github.frcsty.spawnermechanics"
+def version = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
+    maven { url = "https://oss.sonatype.org/content/groups/public/" }
+
+}
+
+dependencies {
+    implementation "me.mattstudios.utils:matt-framework:1.4"
+    implementation "me.mattstudios.utils:matt-framework-gui:1.2.8"
+    compileOnly "com.github.frcsty:spigot:1.8.8"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: project.version]
+    }
+}
+
+shadowJar {
+    relocate "me.mattstudios.utils", "${path}.utils"
+}
+
+sourceCompatibility = version
+targetCompatibility = version
+

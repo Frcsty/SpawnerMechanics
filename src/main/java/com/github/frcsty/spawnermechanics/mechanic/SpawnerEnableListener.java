@@ -8,18 +8,23 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
+import java.util.Optional;
+
 public final class SpawnerEnableListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onSpawnerSpawn(final SpawnerSpawnEvent event) {
-        final CreatureSpawner spawner = event.getSpawner();
+        final CreatureSpawner creatureSpawner = event.getSpawner();
+        Optional<Spawner> spawner = SpawnerMechanics.WRAPPER.getSpawner(creatureSpawner.getLocation());
 
-        if (!SpawnerMechanics.WRAPPER.getSpawner(spawner.getLocation()).isPresent()) {
-            final String type = spawner.getSpawnedType().name();
-            SpawnerMechanics.WRAPPER.addSpawner(new Spawner(spawner.getLocation(), type, SpawnerMechanics.WRAPPER.getSpawnerType(type.toUpperCase()), 1));
+        if (!spawner.isPresent()) {
+            final String type = creatureSpawner.getSpawnedType().name();
+            spawner = Optional.of(new Spawner(creatureSpawner.getLocation(), type, SpawnerMechanics.WRAPPER.getSpawnerType(type.toUpperCase()), 1));
+
+            SpawnerMechanics.WRAPPER.addSpawner(spawner.get());
         }
 
-        //Bukkit.broadcastMessage("Spawner Spawn Event Triggered!");
+        SpawnerMechanics.WRAPPER.addSpawnerActivation(spawner.get());
         event.setCancelled(true);
     }
 }
