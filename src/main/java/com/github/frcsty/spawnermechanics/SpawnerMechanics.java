@@ -23,6 +23,16 @@ public final class SpawnerMechanics extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveResources(
+                "types.json",
+                "attributes/blaze.json",
+                "attributes/iron_golem.json",
+                "drops/pig.json",
+                "drops/skeleton.json",
+                "drops/zombie.json",
+                "drops/frozen_snowman.json"
+        );
+
         registerCommands(
                 new MobsClearCommand(),
                 new SpawnerCacheClearCommand(),
@@ -42,7 +52,7 @@ public final class SpawnerMechanics extends JavaPlugin {
 
         WRAPPER.getStorage().load();
         WRAPPER.getActivation().run();
-        WRAPPER.getSpawnerTypes().loadDefaults();
+        WRAPPER.getSpawnerTypes().load();
         WRAPPER.getEntityDrops().load();
         WRAPPER.getEntityAttributes().load();
     }
@@ -71,6 +81,10 @@ public final class SpawnerMechanics extends JavaPlugin {
         final CommandManager manager = new CommandManager(this);
 
         Arrays.stream(commands).forEach(manager::register);
+    }
+
+    private void saveResources(final String... resources) {
+        Arrays.stream(resources).forEach(resource -> saveResource(resource, false));
     }
 
 }

@@ -5,7 +5,6 @@ import com.github.frcsty.spawnermechanics.Setting;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.mechanic.event.CustomMobSpawnEvent;
 import com.github.frcsty.spawnermechanics.object.CustomEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -80,7 +79,7 @@ public final class MobSpawnListener implements Listener {
             newMob.spawn(false);
         }
 
-        entity.setCustomName(batch + "x " + StringUtils.capitalize(entity.getMetadata(Identifier.MOB_TYPE).get(0).asString().toLowerCase()));
+        entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(entity.getMetadata(Identifier.MOB_TYPE).get(0).asString()));
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
         spawned.getEntity().remove();
     }

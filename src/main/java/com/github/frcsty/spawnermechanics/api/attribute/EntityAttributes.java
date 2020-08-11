@@ -1,6 +1,7 @@
 package com.github.frcsty.spawnermechanics.api.attribute;
 
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
+import com.github.frcsty.spawnermechanics.object.Attribute;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
@@ -52,7 +53,7 @@ public final class EntityAttributes {
                     final Object value = attributes.get(key);
                     attribute.setAttribute((String) key, value);
                 }
-            } catch (ParseException | IOException ex) {
+            } catch (final ParseException | IOException ex) {
                 plugin.getLogger().log(Level.WARNING, "Failed to parse file " + attributeFile.getName() + "!", ex);
             }
 
@@ -81,7 +82,6 @@ public final class EntityAttributes {
         entity.setHealth((long) attribute.getAttribute("health"));
 
         if ((boolean) attribute.getAttribute("fire_tick")) {
-            System.out.println("Setting entities fire tick");
             entity.setFireTicks(Integer.MAX_VALUE);
         }
     }

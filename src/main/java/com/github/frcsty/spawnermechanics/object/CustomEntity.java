@@ -3,7 +3,6 @@ package com.github.frcsty.spawnermechanics.object;
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.mechanic.event.CustomMobSpawnEvent;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -25,18 +24,18 @@ public final class CustomEntity {
         this.type = type;
         this.batch = batch;
         this.location = location;
-        this.mobType = mobType;
+        this.mobType = mobType.toUpperCase();
     }
 
     public void spawn(final boolean call) {
         final LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
         this.entity = entity;
 
-        entity.setMetadata(Identifier.MOB_TYPE, new FixedMetadataValue(plugin, mobType.toUpperCase()));
+        entity.setMetadata(Identifier.MOB_TYPE, new FixedMetadataValue(plugin, mobType));
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
 
-        entity.setCustomName(batch + "x " + StringUtils.capitalize(mobType.toLowerCase()));
-        SpawnerMechanics.WRAPPER.getEntityAttributes().applyEntityAttributes(entity, mobType.toUpperCase());
+        entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(mobType));
+        SpawnerMechanics.WRAPPER.getEntityAttributes().applyEntityAttributes(entity, mobType);
 
         if (call) {
             Bukkit.getPluginManager().callEvent(new CustomMobSpawnEvent(this));

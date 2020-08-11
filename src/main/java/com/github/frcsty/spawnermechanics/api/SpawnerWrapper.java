@@ -6,6 +6,7 @@ import com.github.frcsty.spawnermechanics.api.drop.EntityDrops;
 import com.github.frcsty.spawnermechanics.api.runnable.Activation;
 import com.github.frcsty.spawnermechanics.api.storage.PersistentStorage;
 import com.github.frcsty.spawnermechanics.api.type.SpawnerTypes;
+import com.github.frcsty.spawnermechanics.object.MobType;
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -40,12 +41,16 @@ public final class SpawnerWrapper {
         entityDrops.getEntityDrops().put(identifier, drop);
     }
 
-    public void setSpawnerType(final String identifier, final EntityType mobType) {
-        this.spawnerTypes.getTypes().put(identifier, mobType);
+    public EntityType getSpawnerType(final String identifier) {
+        final MobType type = this.spawnerTypes.getTypes().get(identifier.toUpperCase());
+
+        return type.getEntityType();
     }
 
-    public EntityType getSpawnerType(final String identifier) {
-        return this.spawnerTypes.getTypes().get(identifier);
+    public String getMobDisplay(final String identifier) {
+        final MobType type = this.spawnerTypes.getTypes().get(identifier.toUpperCase());
+
+        return type.getName();
     }
 
     public void addSpawnerActivation(final Spawner spawner) {

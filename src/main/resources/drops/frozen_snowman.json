@@ -1,0 +1,9 @@
+{
+  "drops": {
+    "diamond": {
+      "material": "DIAMOND",
+      "amount": 3,
+      "chance": 15
+    }
+  }
+}

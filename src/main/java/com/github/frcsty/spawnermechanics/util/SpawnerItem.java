@@ -1,6 +1,6 @@
 package com.github.frcsty.spawnermechanics.util;
 
-import org.apache.commons.lang.StringUtils;
+import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,7 +36,7 @@ public final class SpawnerItem {
     }
 
     private static String getFormattedEntityType(final String type) {
-        return StringUtils.capitalize(type.toLowerCase());
+        return SpawnerMechanics.WRAPPER.getMobDisplay(type);
     }
 
     private static CreatureSpawner getCreatureSpawner(final EntityType type) {

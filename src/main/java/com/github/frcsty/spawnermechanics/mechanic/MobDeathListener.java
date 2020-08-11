@@ -3,9 +3,10 @@ package com.github.frcsty.spawnermechanics.mechanic;
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
-import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
@@ -39,19 +40,19 @@ public final class MobDeathListener implements Listener {
 
     @EventHandler
     public void onFakeEntityDeathByEntity(final EntityDamageByEntityEvent event) {
-        if (handle(event.getFinalDamage(), event.getEntity())) {
+        if (handle(event.getFinalDamage(), event.getEntity(), event.getDamager())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onFakeEntityDeathByBlock(final EntityDamageByBlockEvent event) {
-        if (handle(event.getFinalDamage(), event.getEntity())) {
+        if (handle(event.getFinalDamage(), event.getEntity(), null)) {
             event.setCancelled(true);
         }
     }
 
-    private boolean handle(final double finalDamage, final Entity normalEntity) {
+    private boolean handle(final double finalDamage, final Entity normalEntity, final Entity damager) {
         if (!(normalEntity instanceof LivingEntity)) {
             return false;
         }
@@ -74,10 +75,18 @@ public final class MobDeathListener implements Listener {
         final String typeString = type.get(0).asString();
         final EntityDrop drop = SpawnerMechanics.WRAPPER.getEntityDrop(typeString);
         if (drop != null) {
-            drop.getDrops().forEach(itemDrop -> itemDrop.getChanceSortedDrops(true).forEach(loot ->
-                    entity.getWorld().dropItemNaturally(entity.getLocation(), loot)));
+            drop.getDrops().forEach(itemDrop -> {
+                itemDrop.getChanceSortedDrops(true).forEach(loot ->
+                        entity.getWorld().dropItemNaturally(entity.getLocation(), loot));
+
+                itemDrop.getChanceSortedCommands().forEach(command -> {
+                    if (damager instanceof Player) {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", damager.getName()));
+                    }
+                });
+            });
         }
-        entity.setCustomName(batch + "x " + StringUtils.capitalize(typeString.toLowerCase()));
+        entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(typeString));
         return batch > 1;
     }
 }

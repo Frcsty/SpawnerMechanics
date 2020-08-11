@@ -1,0 +1,12 @@
+{
+  "types": {
+    "frozen_snowman": {
+      "type": "SNOWMAN",
+      "name": "Frosty The Snowman"
+    },
+    "batman": {
+      "type": "BAT",
+      "name": "Batman"
+    }
+  }
+}

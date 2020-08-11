@@ -5,7 +5,6 @@ import com.github.frcsty.spawnermechanics.util.SpawnerItem;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -24,7 +23,7 @@ public class SpawnerGiveCommand extends CommandBase {
 
         final EntityType type = SpawnerMechanics.WRAPPER.getSpawnerType(typeString.toUpperCase());
         if (type == null) {
-            sender.sendMessage("Invalid Spawner Type.");
+            sender.sendMessage("Invalid Spawner MobType.");
             return;
         }
 
@@ -38,7 +37,7 @@ public class SpawnerGiveCommand extends CommandBase {
         } else {
             target.getInventory().addItem(SpawnerItem.getItemStack(typeString, type, amount));
         }
-        target.sendMessage("You were given " + amount + "x " + StringUtils.capitalize(typeString.toLowerCase()) + " Spawners");
+        target.sendMessage("You were given " + amount + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(typeString) + " Spawners");
     }
 
 }

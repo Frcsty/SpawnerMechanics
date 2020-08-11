@@ -49,11 +49,19 @@ public final class EntityDrops {
 
                 for (final Object dropObject : drops.keySet()) {
                     final JSONObject object = (JSONObject) drops.get(dropObject);
-                    final Drop drop = new Drop().withDrop(
-                            Material.matchMaterial((String) object.get("material")),
-                            Integer.valueOf(object.get("amount").toString()),
-                            Integer.valueOf(object.get("chance").toString())
-                    );
+                    Drop drop;
+                    if (object.get("command") != null) {
+                        drop = new Drop().withCommandDrop(
+                                (String) object.get("command"),
+                                Integer.valueOf(object.get("chance").toString())
+                        );
+                    } else {
+                        drop = new Drop().withDrop(
+                                Material.matchMaterial((String) object.get("material")),
+                                Integer.valueOf(object.get("amount").toString()),
+                                Integer.valueOf(object.get("chance").toString())
+                        );
+                    }
 
                     entityDrop.addDrops(drop);
                 }

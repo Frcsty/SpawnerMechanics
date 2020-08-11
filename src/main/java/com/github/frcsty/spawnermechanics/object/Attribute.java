@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.api.attribute;
+package com.github.frcsty.spawnermechanics.object;
 
 import java.util.HashMap;
 import java.util.Map;
