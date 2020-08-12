@@ -3,8 +3,8 @@ package com.github.frcsty.spawnermechanics.mechanic;
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Spawner;
+import com.github.frcsty.spawnermechanics.util.HologramDisplay;
 import com.github.frcsty.spawnermechanics.util.ItemNBT;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
@@ -48,6 +48,7 @@ public final class SpawnerPlaceListener implements Listener {
         final CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
         creatureSpawner.setSpawnedType(entityType);
         SpawnerMechanics.WRAPPER.addSpawner(spawner.get());
+        HologramDisplay.createHologram(block, type, 1);
     }
 
 }

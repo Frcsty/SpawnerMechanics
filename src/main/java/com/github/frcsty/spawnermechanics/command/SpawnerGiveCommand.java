@@ -11,7 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @Command("spawner")
-public class SpawnerGiveCommand extends CommandBase {
+public final class SpawnerGiveCommand extends CommandBase {
 
     @SubCommand("give")
     public void onSpawnerGive(final CommandSender sender, final String player, final String typeString, final Integer amount) {

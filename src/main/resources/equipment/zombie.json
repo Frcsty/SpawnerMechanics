@@ -1,0 +1,24 @@
+{
+  "equipment": {
+    "helmet": {
+      "slot": "HELMET",
+      "material": 310,
+      "data": 0,
+      "enchantments": {
+        "thorns": {
+          "enchantment": "THORNS",
+          "level": 2
+        },
+        "protection": {
+          "enchantment": "PROTECTION",
+          "level": 1
+        }
+      }
+    },
+    "boots": {
+      "slot": "BOOTS",
+      "material": "LEATHER_BOOTS",
+      "data": 0
+    }
+  }
+}

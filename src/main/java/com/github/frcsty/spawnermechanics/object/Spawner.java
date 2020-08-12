@@ -40,4 +40,5 @@ public final class Spawner {
     public int getStack() {
         return stack == 0 ? 1 : stack;
     }
+
 }

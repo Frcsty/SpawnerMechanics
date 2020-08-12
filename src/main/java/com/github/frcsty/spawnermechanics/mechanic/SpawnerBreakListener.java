@@ -2,6 +2,7 @@ package com.github.frcsty.spawnermechanics.mechanic;
 
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Spawner;
+import com.github.frcsty.spawnermechanics.util.HologramDisplay;
 import com.github.frcsty.spawnermechanics.util.SpawnerItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,22 +36,26 @@ public final class SpawnerBreakListener implements Listener {
         final Spawner spawner = optionalSpawner.get();
         if (!player.getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
             SpawnerMechanics.WRAPPER.removeSpawner(spawner);
+            HologramDisplay.removeHologram(broken);
             return;
         }
 
         final boolean stack = player.isSneaking();
         final int amount = stack ? spawner.getStack() : 1;
 
-        if (!stack) {
+        if (!stack && spawner.getStack() > 1) {
             event.setCancelled(true);
         }
 
-        if (stack) {
+        if (stack || spawner.getStack() == 1) {
+            broken.setType(Material.AIR);
             SpawnerMechanics.WRAPPER.removeSpawner(spawner);
+            HologramDisplay.removeHologram(broken);
         } else {
             SpawnerMechanics.WRAPPER.removeSpawner(spawner);
             spawner.removeAmount(1);
             SpawnerMechanics.WRAPPER.addSpawner(spawner);
+            HologramDisplay.updateHologram(broken, spawner.getMobType(), spawner.getStack());
         }
 
         player.getInventory().addItem(SpawnerItem.getItemStack(spawner.getMobType(), spawner.getType(), amount));

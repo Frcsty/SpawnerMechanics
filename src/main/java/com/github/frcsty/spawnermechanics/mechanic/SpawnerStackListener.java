@@ -3,6 +3,7 @@ package com.github.frcsty.spawnermechanics.mechanic;
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Spawner;
+import com.github.frcsty.spawnermechanics.util.HologramDisplay;
 import com.github.frcsty.spawnermechanics.util.ItemNBT;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -65,6 +66,8 @@ public final class SpawnerStackListener implements Listener {
             SpawnerMechanics.WRAPPER.removeSpawner(spawner.get());
             spawner.get().addAmount(amount);
             SpawnerMechanics.WRAPPER.addSpawner(spawner.get());
+
+            HologramDisplay.updateHologram(clicked, type, spawner.get().getStack());
         }
 
         item.setAmount(item.getAmount() - amount);

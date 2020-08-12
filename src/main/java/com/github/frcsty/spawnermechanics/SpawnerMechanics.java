@@ -5,6 +5,9 @@ import com.github.frcsty.spawnermechanics.command.SpawnerGiveCommand;
 import com.github.frcsty.spawnermechanics.command.temp.MobsClearCommand;
 import com.github.frcsty.spawnermechanics.command.temp.SpawnerCacheClearCommand;
 import com.github.frcsty.spawnermechanics.mechanic.*;
+import com.github.frcsty.spawnermechanics.util.HologramDisplay;
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import me.mattstudios.mf.base.CommandBase;
 import me.mattstudios.mf.base.CommandManager;
 import org.bukkit.Bukkit;
@@ -15,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Files;
 import java.util.Arrays;
 
 public final class SpawnerMechanics extends JavaPlugin {
@@ -30,7 +34,8 @@ public final class SpawnerMechanics extends JavaPlugin {
                 "drops/pig.json",
                 "drops/skeleton.json",
                 "drops/zombie.json",
-                "drops/frozen_snowman.json"
+                "drops/frozen_snowman.json",
+                "equipment/zombie.json"
         );
 
         registerCommands(
@@ -55,6 +60,9 @@ public final class SpawnerMechanics extends JavaPlugin {
         WRAPPER.getSpawnerTypes().load();
         WRAPPER.getEntityDrops().load();
         WRAPPER.getEntityAttributes().load();
+        WRAPPER.getEntityEquipment().load();
+
+        HologramDisplay.loadHolograms();
     }
 
     @Override
@@ -70,6 +78,8 @@ public final class SpawnerMechanics extends JavaPlugin {
                 entity.remove();
             }
         }
+
+        HologramsAPI.getHolograms(this).forEach(Hologram::delete);
     }
 
     private void registerListeners(final Listener... listeners) {

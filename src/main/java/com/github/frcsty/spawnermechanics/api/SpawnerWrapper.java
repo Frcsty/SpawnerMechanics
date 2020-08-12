@@ -3,6 +3,8 @@ package com.github.frcsty.spawnermechanics.api;
 import com.github.frcsty.spawnermechanics.api.attribute.EntityAttributes;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
 import com.github.frcsty.spawnermechanics.api.drop.EntityDrops;
+import com.github.frcsty.spawnermechanics.api.equipment.EntityEquipment;
+import com.github.frcsty.spawnermechanics.api.equipment.EquipmentSet;
 import com.github.frcsty.spawnermechanics.api.runnable.Activation;
 import com.github.frcsty.spawnermechanics.api.storage.PersistentStorage;
 import com.github.frcsty.spawnermechanics.api.type.SpawnerTypes;
@@ -20,6 +22,7 @@ public final class SpawnerWrapper {
     private final EntityDrops entityDrops = new EntityDrops();
     private final SpawnerTypes spawnerTypes = new SpawnerTypes();
     private final EntityAttributes entityAttributes = new EntityAttributes();
+    private final EntityEquipment entityEquipment = new EntityEquipment();
 
     public void addSpawner(final Spawner spawner) {
         storage.getSpawners().add(spawner);
@@ -53,6 +56,10 @@ public final class SpawnerWrapper {
         return type.getName();
     }
 
+    public EquipmentSet getEquipment(final String identifier) {
+        return this.entityEquipment.getEntityEquipment().get(identifier.toUpperCase());
+    }
+
     public void addSpawnerActivation(final Spawner spawner) {
         this.activation.getActivationQueue().add(spawner);
     }
@@ -76,4 +83,9 @@ public final class SpawnerWrapper {
     public EntityAttributes getEntityAttributes() {
         return this.entityAttributes;
     }
+
+    public EntityEquipment getEntityEquipment() {
+        return this.entityEquipment;
+    }
+
 }

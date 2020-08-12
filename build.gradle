@@ -6,7 +6,7 @@ plugins {
 group = "com.github.frcsty"
 version = "1.0.0"
 
-def path = "com.github.frcsty.spawnermechanics"
+def path = "com.github.frcsty.spawnermechanics.libs"
 def version = JavaVersion.VERSION_1_8
 
 repositories {
@@ -20,6 +20,7 @@ repositories {
 dependencies {
     implementation "me.mattstudios.utils:matt-framework:1.4"
     implementation "me.mattstudios.utils:matt-framework-gui:1.2.8"
+    compileOnly "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0"
     compileOnly "com.github.frcsty:spigot:1.8.8"
 }
 
@@ -30,7 +31,8 @@ processResources {
 }
 
 shadowJar {
-    relocate "me.mattstudios.utils", "${path}.utils"
+    relocate "me.mattstudios.mf", "${path}.utils"
+    relocate "import com.gmail.filoghost.holographicdisplays.api", "${path}.holograms"
 }
 
 sourceCompatibility = version

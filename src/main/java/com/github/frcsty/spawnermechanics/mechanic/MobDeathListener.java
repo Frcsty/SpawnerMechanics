@@ -36,6 +36,8 @@ public final class MobDeathListener implements Listener {
 
         event.getDrops().clear();
         event.setDroppedExp(0);
+
+        handleDrops(type.get(0).asString(), entity, null);
     }
 
     @EventHandler
@@ -73,20 +75,29 @@ public final class MobDeathListener implements Listener {
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch - 1));
 
         final String typeString = type.get(0).asString();
-        final EntityDrop drop = SpawnerMechanics.WRAPPER.getEntityDrop(typeString);
-        if (drop != null) {
-            drop.getDrops().forEach(itemDrop -> {
-                itemDrop.getChanceSortedDrops(true).forEach(loot ->
-                        entity.getWorld().dropItemNaturally(entity.getLocation(), loot));
-
-                itemDrop.getChanceSortedCommands().forEach(command -> {
-                    if (damager instanceof Player) {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", damager.getName()));
-                    }
-                });
-            });
-        }
+        handleDrops(typeString, entity, damager);
         entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(typeString));
         return batch > 1;
+    }
+
+    private void handleDrops(final String type, final Entity entity, final Entity damager) {
+        final EntityDrop drop = SpawnerMechanics.WRAPPER.getEntityDrop(type);
+        if (drop == null) {
+            return;
+        }
+
+        drop.getDrops().forEach(itemDrop -> {
+            itemDrop.getChanceSortedDrops(true).forEach(loot ->
+                    entity.getWorld().dropItemNaturally(entity.getLocation(), loot));
+
+            if (damager == null) {
+                return;
+            }
+            itemDrop.getChanceSortedCommands().forEach(command -> {
+                if (damager instanceof Player) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", damager.getName()));
+                }
+            });
+        });
     }
 }

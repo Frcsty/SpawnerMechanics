@@ -2,12 +2,16 @@ package com.github.frcsty.spawnermechanics.object;
 
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
+import com.github.frcsty.spawnermechanics.api.equipment.EquipmentSet;
 import com.github.frcsty.spawnermechanics.mechanic.event.CustomMobSpawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,9 +41,57 @@ public final class CustomEntity {
         entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(mobType));
         SpawnerMechanics.WRAPPER.getEntityAttributes().applyEntityAttributes(entity, mobType);
 
+        final EquipmentSet equipment = SpawnerMechanics.WRAPPER.getEquipment(mobType);
+        if (equipment != null) {
+            final EntityEquipment entityEquipment = entity.getEquipment();
+            equipment.getEquipment().forEach((key, value) -> {
+                final ItemStack item = getItem(value);
+
+                switch (key) {
+                    case "HELMET":
+                        entityEquipment.setHelmet(item);
+                        break;
+                    case "CHESTPLATE":
+                        entityEquipment.setChestplate(item);
+                        break;
+                    case "LEGGINGS":
+                        entityEquipment.setLeggings(item);
+                        break;
+                    case "BOOTS":
+                        entityEquipment.setBoots(item);
+                        break;
+                    case "HAND":
+                        entityEquipment.setItemInHand(item);
+                }
+
+                clearDropChances(entityEquipment);
+            });
+        }
         if (call) {
             Bukkit.getPluginManager().callEvent(new CustomMobSpawnEvent(this));
         }
+    }
+
+    private void clearDropChances(final EntityEquipment equipment) {
+        equipment.setHelmetDropChance(0);
+        equipment.setChestplateDropChance(0);
+        equipment.setLeggingsDropChance(0);
+        equipment.setBootsDropChance(0);
+        equipment.setItemInHandDropChance(0);
+    }
+
+    private ItemStack getItem(final Equipment equipment) {
+        final ItemStack item = new ItemStack(equipment.getMaterial(), 1, equipment.getData());
+
+        for (final Enchantment enchant : equipment.getEnchantments().keySet()) {
+            final int level = equipment.getEnchantments().get(enchant);
+            if (enchant == null || level < 0) {
+                continue;
+            }
+            item.addEnchantment(enchant, level);
+        }
+
+        return item;
     }
 
     public String getMobType() {
