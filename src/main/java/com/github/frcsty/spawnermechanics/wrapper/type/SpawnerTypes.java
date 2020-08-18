@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.api.type;
+package com.github.frcsty.spawnermechanics.wrapper.type;
 
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.MobType;

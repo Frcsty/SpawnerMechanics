@@ -1,5 +1,4 @@
 name: SpawnerMechanics
 version: @version@
 main: com.github.frcsty.spawnermechanics.SpawnerMechanics
-depend: [HolographicDisplays]
 loadbefore: [Essentials]

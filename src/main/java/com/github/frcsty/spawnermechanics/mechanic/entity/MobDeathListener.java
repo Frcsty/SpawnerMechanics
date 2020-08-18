@@ -1,8 +1,8 @@
-package com.github.frcsty.spawnermechanics.mechanic;
+package com.github.frcsty.spawnermechanics.mechanic.entity;
 
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
-import com.github.frcsty.spawnermechanics.api.drop.EntityDrop;
+import com.github.frcsty.spawnermechanics.wrapper.drop.EntityDrop;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -76,12 +76,12 @@ public final class MobDeathListener implements Listener {
 
         final String typeString = type.get(0).asString();
         handleDrops(typeString, entity, damager);
-        entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(typeString));
+        entity.setCustomName(batch + "x " + SpawnerMechanics.getWrapper().getMobDisplay(typeString));
         return batch > 1;
     }
 
     private void handleDrops(final String type, final Entity entity, final Entity damager) {
-        final EntityDrop drop = SpawnerMechanics.WRAPPER.getEntityDrop(type);
+        final EntityDrop drop = SpawnerMechanics.getWrapper().getEntityDrop(type);
         if (drop == null) {
             return;
         }

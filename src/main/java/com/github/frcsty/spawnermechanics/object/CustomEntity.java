@@ -2,7 +2,7 @@ package com.github.frcsty.spawnermechanics.object;
 
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
-import com.github.frcsty.spawnermechanics.api.equipment.EquipmentSet;
+import com.github.frcsty.spawnermechanics.wrapper.equipment.EquipmentSet;
 import com.github.frcsty.spawnermechanics.mechanic.event.CustomMobSpawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,10 +38,10 @@ public final class CustomEntity {
         entity.setMetadata(Identifier.MOB_TYPE, new FixedMetadataValue(plugin, mobType));
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
 
-        entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(mobType));
-        SpawnerMechanics.WRAPPER.getEntityAttributes().applyEntityAttributes(entity, mobType);
+        entity.setCustomName(batch + "x " + SpawnerMechanics.getWrapper().getMobDisplay(mobType));
+        SpawnerMechanics.getWrapper().getEntityAttributes().applyEntityAttributes(entity, mobType);
 
-        final EquipmentSet equipment = SpawnerMechanics.WRAPPER.getEquipment(mobType);
+        final EquipmentSet equipment = SpawnerMechanics.getWrapper().getEquipment(mobType);
         if (equipment != null) {
             final EntityEquipment entityEquipment = entity.getEquipment();
             equipment.getEquipment().forEach((key, value) -> {

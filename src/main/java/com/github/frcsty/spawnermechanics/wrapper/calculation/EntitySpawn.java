@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.api.calculation;
+package com.github.frcsty.spawnermechanics.wrapper.calculation;
 
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import org.bukkit.Bukkit;
@@ -16,15 +16,17 @@ public final class EntitySpawn {
     private static final SplittableRandom RANDOM = new SplittableRandom();
     private final Map<Location, Integer> mobSpawns = new HashMap<>();
     private final Spawner spawner;
+    private final Location location;
 
-    public EntitySpawn(final Spawner spawner) {
+    public EntitySpawn(final Location location, final Spawner spawner) {
+        this.location = location;
         this.spawner = spawner;
 
         calculateSpawns();
     }
 
     private void calculateSpawns() {
-        final Location baseLocation = spawner.getLocation();
+        final Location baseLocation = location;
         final int batchAmount = getBatchAmount();
         final int total = getTotalSpawnAmount(spawner.getStack());
 
@@ -68,7 +70,7 @@ public final class EntitySpawn {
         location.setZ(location.getBlockZ() + getRandomPosition());
 
         if (location.getWorld().getBlockAt(location).getType() != Material.AIR) {
-            location = getRandomLocation(spawner.getLocation());
+            location = getRandomLocation(location);
         }
 
         return location;

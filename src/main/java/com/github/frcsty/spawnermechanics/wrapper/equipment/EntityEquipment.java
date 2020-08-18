@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.api.equipment;
+package com.github.frcsty.spawnermechanics.wrapper.equipment;
 
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Equipment;

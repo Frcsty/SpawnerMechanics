@@ -36,7 +36,7 @@ public final class SpawnerItem {
     }
 
     private static String getFormattedEntityType(final String type) {
-        return SpawnerMechanics.WRAPPER.getMobDisplay(type);
+        return SpawnerMechanics.getWrapper().getMobDisplay(type);
     }
 
     private static CreatureSpawner getCreatureSpawner(final EntityType type) {

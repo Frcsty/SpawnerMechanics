@@ -1,10 +1,11 @@
-package com.github.frcsty.spawnermechanics.mechanic;
+package com.github.frcsty.spawnermechanics.mechanic.block;
 
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Spawner;
-import com.github.frcsty.spawnermechanics.util.HologramDisplay;
+import com.github.frcsty.spawnermechanics.object.SpawnerLocation;
 import com.github.frcsty.spawnermechanics.util.ItemNBT;
+import com.github.frcsty.spawnermechanics.wrapper.SpawnerWrapper;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
@@ -16,12 +17,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Optional;
-
 public final class SpawnerStackListener implements Listener {
 
     @EventHandler
     public void onSpawnerStack(final PlayerInteractEvent event) {
+        final SpawnerWrapper wrapper = SpawnerMechanics.getWrapper();
         final Player player = event.getPlayer();
         final ItemStack item = event.getItem();
         final Action action = event.getAction();
@@ -48,7 +48,7 @@ public final class SpawnerStackListener implements Listener {
             return;
         }
 
-        final EntityType entityType = SpawnerMechanics.WRAPPER.getSpawnerType(type.toUpperCase());
+        final EntityType entityType = wrapper.getSpawnerType(type.toUpperCase());
         final CreatureSpawner creatureSpawner = (CreatureSpawner) clicked.getState();
         if (creatureSpawner.getSpawnedType() != entityType) {
             return;
@@ -59,17 +59,17 @@ public final class SpawnerStackListener implements Listener {
             amount = item.getAmount();
         }
 
-        final Optional<Spawner> spawner = SpawnerMechanics.WRAPPER.getSpawner(clicked.getLocation());
-        if (!spawner.isPresent()) {
-            SpawnerMechanics.WRAPPER.addSpawner(new Spawner(clicked.getLocation(),type, entityType, amount));
+        final SpawnerLocation location = new SpawnerLocation(clicked.getWorld(), clicked.getX(), clicked.getY(), clicked.getZ());
+        final Spawner spawner = SpawnerMechanics.getWrapper().getSpawner(location);
+        if (spawner == null) {
+            wrapper.setSpawner(location, new Spawner(type, entityType, amount));
         } else {
-            SpawnerMechanics.WRAPPER.removeSpawner(spawner.get());
-            spawner.get().addAmount(amount);
-            SpawnerMechanics.WRAPPER.addSpawner(spawner.get());
-
-            HologramDisplay.updateHologram(clicked, type, spawner.get().getStack());
+            wrapper.removeSpawner(location);
+            spawner.addAmount(amount);
+            wrapper.setSpawner(location, spawner);
         }
 
+        wrapper.updateHologram(location, spawner, false);
         item.setAmount(item.getAmount() - amount);
         player.setItemInHand(item);
     }

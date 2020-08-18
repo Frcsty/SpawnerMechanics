@@ -12,7 +12,7 @@ public class SpawnerCacheClearCommand extends CommandBase {
     @Default
     public void onCommand(final Player player) {
         final long start = System.currentTimeMillis();
-        SpawnerMechanics.WRAPPER.getStorage().getSpawners().clear();
+        SpawnerMechanics.getWrapper().getStorage().getSpawners().clear();
         player.sendMessage("Cleared spawner storage cache! (Took: " + (System.currentTimeMillis() - start) + "ms)");
     }
 }

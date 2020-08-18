@@ -1,21 +1,23 @@
-package com.github.frcsty.spawnermechanics.api.runnable;
+package com.github.frcsty.spawnermechanics.wrapper.runnable;
 
+import com.github.frcsty.spawnermechanics.Setting;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
-import com.github.frcsty.spawnermechanics.api.calculation.EntitySpawn;
+import com.github.frcsty.spawnermechanics.object.SpawnerLocation;
+import com.github.frcsty.spawnermechanics.wrapper.calculation.EntitySpawn;
 import com.github.frcsty.spawnermechanics.object.CustomEntity;
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class Activation {
 
     private static final long DELAY = 20L;
-    private final LinkedList<Spawner> removalQueue = new LinkedList<>();
-    private final LinkedList<Spawner> activationQueue = new LinkedList<>();
+    private final Map<SpawnerLocation, Spawner> removalQueue = new ConcurrentHashMap<>();
+    private final Map<SpawnerLocation, Spawner> activationQueue = new ConcurrentHashMap<>();
 
     public void run() {
         final SpawnerMechanics plugin = JavaPlugin.getPlugin(SpawnerMechanics.class);
@@ -23,8 +25,12 @@ public final class Activation {
         new BukkitRunnable() {
             @Override
             public void run() {
-                activationQueue.forEach(spawner -> {
-                    final EntitySpawn spawn = new EntitySpawn(spawner);
+                if (!Setting.ENABLED_SPAWNING) {
+                    return;
+                }
+
+                activationQueue.forEach((loc, spawner) -> {
+                    final EntitySpawn spawn = new EntitySpawn(loc.getLocation(), spawner);
 
                     for (final Location location : spawn.getMobSpawns().keySet()) {
                         final int batch = spawn.getMobSpawns().get(location);
@@ -33,21 +39,19 @@ public final class Activation {
                         entity.spawn(true);
                     }
 
-                    removalQueue.add(spawner);
+                    removalQueue.put(loc, spawner);
                 });
 
-                final ListIterator<Spawner> iterator = removalQueue.listIterator();
-                if (iterator.hasNext()) {
-                    final Spawner spawner = iterator.next();
+                removalQueue.forEach((loc, spawner) -> {
+                    activationQueue.remove(loc);
 
-                    activationQueue.remove(spawner);
-                    removalQueue.removeFirst();
-                }
+                    removalQueue.remove(loc);
+                });
             }
         }.runTaskTimer(plugin, DELAY, DELAY);
     }
 
-    public LinkedList<Spawner> getActivationQueue() {
+    public Map<SpawnerLocation, Spawner> getActivationQueue() {
         return this.activationQueue;
     }
 }

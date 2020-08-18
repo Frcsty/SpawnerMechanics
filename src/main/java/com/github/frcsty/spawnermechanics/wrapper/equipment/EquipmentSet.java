@@ -1,7 +1,6 @@
-package com.github.frcsty.spawnermechanics.api.equipment;
+package com.github.frcsty.spawnermechanics.wrapper.equipment;
 
 import com.github.frcsty.spawnermechanics.object.Equipment;
-import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.HashMap;
 import java.util.Map;

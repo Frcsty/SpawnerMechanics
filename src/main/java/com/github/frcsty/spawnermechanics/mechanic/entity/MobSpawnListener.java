@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.mechanic;
+package com.github.frcsty.spawnermechanics.mechanic.entity;
 
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.Setting;
@@ -79,7 +79,7 @@ public final class MobSpawnListener implements Listener {
             newMob.spawn(false);
         }
 
-        entity.setCustomName(batch + "x " + SpawnerMechanics.WRAPPER.getMobDisplay(entity.getMetadata(Identifier.MOB_TYPE).get(0).asString()));
+        entity.setCustomName(batch + "x " + SpawnerMechanics.getWrapper().getMobDisplay(entity.getMetadata(Identifier.MOB_TYPE).get(0).asString()));
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch));
         spawned.getEntity().remove();
     }

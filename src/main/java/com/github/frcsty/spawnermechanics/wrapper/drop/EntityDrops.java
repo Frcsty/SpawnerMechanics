@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.api.drop;
+package com.github.frcsty.spawnermechanics.wrapper.drop;
 
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Drop;

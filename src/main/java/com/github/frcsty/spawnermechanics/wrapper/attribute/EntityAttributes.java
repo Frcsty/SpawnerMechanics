@@ -1,4 +1,4 @@
-package com.github.frcsty.spawnermechanics.api.attribute;
+package com.github.frcsty.spawnermechanics.wrapper.attribute;
 
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
 import com.github.frcsty.spawnermechanics.object.Attribute;
