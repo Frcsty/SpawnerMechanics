@@ -40,7 +40,7 @@ public final class SpawnerWrapper {
     }
 
     public EntityDrop getEntityDrop(final String identifier) {
-        return entityDrops.getEntityDrops().get(identifier);
+        return entityDrops.getEntityDrops().get(identifier.toUpperCase());
     }
 
     public EntityType getSpawnerType(final String identifier) {
@@ -61,6 +61,10 @@ public final class SpawnerWrapper {
 
     public Attribute getEntityAttribute(final String identifier) {
         return this.getEntityAttributes().getAttributes().get(identifier.toUpperCase());
+    }
+
+    public int getSpawnerValue(final Spawner spawner) {
+        return this.taxHandler.getSpawnerValue(spawner);
     }
 
     public void addSpawnerActivation(final SpawnerLocation location, final Spawner spawner) {

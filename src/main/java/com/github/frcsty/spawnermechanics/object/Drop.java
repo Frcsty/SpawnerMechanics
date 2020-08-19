@@ -45,8 +45,10 @@ public final class Drop {
     }
 
     public Map<ItemStack, Integer> getDrops() {
-        return drops;
+        return this.drops;
     }
+
+    public Map<String, Integer> getCommandDrops() { return this.commands; }
 
     public List<ItemStack> getChanceSortedDrops(final boolean randomAmount) {
         final List<ItemStack> result = new ArrayList<>();

@@ -2,10 +2,12 @@ package com.github.frcsty.spawnermechanics.mechanic.block;
 
 import com.github.frcsty.spawnermechanics.Identifier;
 import com.github.frcsty.spawnermechanics.SpawnerMechanics;
+import com.github.frcsty.spawnermechanics.mechanic.event.SpawnerInteractEvent;
 import com.github.frcsty.spawnermechanics.object.Spawner;
 import com.github.frcsty.spawnermechanics.object.SpawnerLocation;
 import com.github.frcsty.spawnermechanics.util.ItemNBT;
 import com.github.frcsty.spawnermechanics.wrapper.SpawnerWrapper;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
@@ -27,7 +29,7 @@ public final class SpawnerStackListener implements Listener {
         final Action action = event.getAction();
         final Block clicked = event.getClickedBlock();
 
-        if (item == null || clicked == null) {
+        if (clicked == null) {
             return;
         }
 
@@ -35,11 +37,15 @@ public final class SpawnerStackListener implements Listener {
             return;
         }
 
-        if (item.getType() != Material.MOB_SPAWNER) {
+        final SpawnerLocation location = new SpawnerLocation(clicked.getWorld(), clicked.getX(), clicked.getY(), clicked.getZ());
+        final Spawner spawner = SpawnerMechanics.getWrapper().getSpawner(location);
+
+        if (action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
-        if (action != Action.RIGHT_CLICK_BLOCK) {
+        if (item == null || item.getType() != Material.MOB_SPAWNER) {
+            Bukkit.getPluginManager().callEvent(new SpawnerInteractEvent(spawner, item, player));
             return;
         }
 
@@ -59,8 +65,6 @@ public final class SpawnerStackListener implements Listener {
             amount = item.getAmount();
         }
 
-        final SpawnerLocation location = new SpawnerLocation(clicked.getWorld(), clicked.getX(), clicked.getY(), clicked.getZ());
-        final Spawner spawner = SpawnerMechanics.getWrapper().getSpawner(location);
         if (spawner == null) {
             wrapper.setSpawner(location, new Spawner(type, entityType, amount));
         } else {

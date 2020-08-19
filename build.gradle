@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation "me.mattstudios.utils:matt-framework:1.4"
-    implementation "me.mattstudios.utils:matt-framework-gui:1.2.8"
+    implementation "me.mattstudios.utils:matt-framework-gui:2.0.2"
     compileOnly "com.github.frcsty:spigot:1.8.8"
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") { exclude group: "org.bukkit" }
 }

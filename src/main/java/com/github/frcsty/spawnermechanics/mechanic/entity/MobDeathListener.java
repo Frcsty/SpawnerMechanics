@@ -66,11 +66,12 @@ public final class MobDeathListener implements Listener {
             return false;
         }
 
-        if (finalDamage < entity.getHealth()) {
+        final int batch = data.get(0).asInt();
+
+        if (batch <= 0 || finalDamage < entity.getHealth()) {
             return false;
         }
 
-        final int batch = data.get(0).asInt();
         entity.setHealth(entity.getMaxHealth());
         entity.setMetadata(Identifier.MOB_AMOUNT, new FixedMetadataValue(plugin, batch - 1));
 

@@ -3,10 +3,8 @@ package com.github.frcsty.spawnermechanics;
 import com.github.frcsty.spawnermechanics.command.SpawnerGiveCommand;
 import com.github.frcsty.spawnermechanics.command.temp.MobsClearCommand;
 import com.github.frcsty.spawnermechanics.command.temp.SpawnerCacheClearCommand;
-import com.github.frcsty.spawnermechanics.mechanic.block.SpawnerBreakListener;
-import com.github.frcsty.spawnermechanics.mechanic.block.SpawnerEnableListener;
-import com.github.frcsty.spawnermechanics.mechanic.block.SpawnerPlaceListener;
-import com.github.frcsty.spawnermechanics.mechanic.block.SpawnerStackListener;
+import com.github.frcsty.spawnermechanics.command.temp.ToggleSpawnerActivation;
+import com.github.frcsty.spawnermechanics.mechanic.block.*;
 import com.github.frcsty.spawnermechanics.mechanic.entity.MobDeathListener;
 import com.github.frcsty.spawnermechanics.mechanic.entity.MobSpawnListener;
 import com.github.frcsty.spawnermechanics.mechanic.entity.mob.AttributeListener;
@@ -33,6 +31,8 @@ public final class SpawnerMechanics extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         saveResources(
                 "types.json",
                 "economy.json",
@@ -44,6 +44,7 @@ public final class SpawnerMechanics extends JavaPlugin {
                 "drops/skeleton.json",
                 "drops/zombie.json",
                 "drops/frozen_snowman.json",
+                "drops/blaze.json",
 
                 "equipment/zombie.json"
         );
@@ -51,6 +52,7 @@ public final class SpawnerMechanics extends JavaPlugin {
         registerCommands(
                 new MobsClearCommand(),
                 new SpawnerCacheClearCommand(),
+                new ToggleSpawnerActivation(),
 
                 new SpawnerGiveCommand()
         );
@@ -60,6 +62,7 @@ public final class SpawnerMechanics extends JavaPlugin {
                 new SpawnerPlaceListener(),
                 new SpawnerStackListener(),
                 new SpawnerBreakListener(),
+                new SpawnerInteractListener(this),
 
                 new MobSpawnListener(this),
                 new MobDeathListener(this),
@@ -80,6 +83,7 @@ public final class SpawnerMechanics extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        reloadConfig();
         WRAPPER.getStorage().save(this);
         WRAPPER.getHologramDisplay().remove();
 

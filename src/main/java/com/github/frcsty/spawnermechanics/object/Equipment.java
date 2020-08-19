@@ -12,12 +12,8 @@ public final class Equipment {
     private Material material = Material.STONE;
     private short data = 0;
 
-    public void setMaterial(final Object material) {
-        if (material instanceof Long) {
-            this.material = Material.getMaterial(Integer.valueOf(material.toString()));
-        } else {
-            this.material = Material.matchMaterial(material.toString());
-        }
+    public void setMaterial(final String material) {
+        this.material = Material.getMaterial(Integer.valueOf(material));
     }
 
     public void setData(final int data) {

@@ -1,0 +1,26 @@
+spawner-information:
+  title: "> Spawner Options"
+  size: 1
+  items:
+    info:
+      display: '&e&lINFORMATION: &7{spawner-type} Spawner'
+      lore:
+        - ''
+        - '&e&lDescription:'
+        - ' &7&o"This item details an overview of the'
+        - ' &7&oimportant information about this spawner"'
+        - ''
+        - '&e&lInformation:'
+        - '&6* &7Mobs from this spawner drop'
+        - '{spawner-drop}'
+        - '&6* &7This spawner stack is worth &a${stack-value} &7value.'
+        - '&6* &7There are &f{stack-amount} Spawner(s) &7in this stack.'
+        - ''
+        - "&f&lTIP: &7Go outside, it's nice today :D"
+      slot: 4
+      material: 386
+
+word-variables:
+  - 'exp;{num1} - {num2} Experience'
+  - 'eco;${num1} - ${num2} Money'
+  - 'crate;{num1} - {num2} Mythic Key(s)'

@@ -48,27 +48,29 @@ public final class TaxHandler {
         }
     }
 
-    public TaxHolder handle(final Player player, final Spawner spawner, final boolean stack) {
+    public TaxHolder handle(final Player player, final Spawner spawner) {
         final int balance = (int) economy.getBalance(player);
-        final int value = this.taxes.get(spawner.getMobType().toUpperCase());
+        final int value = getSpawnerValue(spawner);
         if (value <= 0) return null;
 
         final TaxHolder holder = new TaxHolder();
-        final int required = stack ? spawner.getStack() * value : value;
-
-        if (balance >= required) {
-            holder.setAmount(stack ? spawner.getStack() : 1);
-            economy.withdrawPlayer(player, required);
+        if (hasBypass(player) || balance >= value) {
+            holder.setAmount(1);
+            if (!hasBypass(player)) {
+                economy.withdrawPlayer(player, value);
+            }
         } else {
-            final int affordable = balance / value;
-            final int remaining = spawner.getStack() - affordable;
-
-            System.out.println(affordable + ", " + remaining + ", " + (required - (remaining * value)));
-            holder.setAmount(affordable);
-            holder.setRemaining(remaining);
-            economy.withdrawPlayer(player, required - (remaining * value));
+            holder.setAmount(0);
         }
 
         return holder;
+    }
+
+    public int getSpawnerValue(final Spawner spawner) {
+        return this.taxes.get(spawner.getMobType().toUpperCase()) == null ? 0 : this.taxes.get(spawner.getMobType().toUpperCase());
+    }
+
+    private boolean hasBypass(final Player player) {
+        return player.hasPermission("districtspawners.tax.bypass");
     }
 }

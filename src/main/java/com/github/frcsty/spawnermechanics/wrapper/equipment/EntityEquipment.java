@@ -49,7 +49,7 @@ public final class EntityEquipment {
                 for (final Object equipmentObject : jsonEquipment.keySet()) {
                     final JSONObject object = (JSONObject) jsonEquipment.get(equipmentObject);
 
-                    equipment.setMaterial(object.get("material"));
+                    equipment.setMaterial(object.get("material").toString());
                     equipment.setData(Integer.valueOf(object.get("data").toString()));
 
                     final JSONObject enchantments = (JSONObject) object.get("enchantments");

@@ -7,6 +7,6 @@ public final class Setting {
     public static final double DISTANCE_Y = 10;
     public static final double DISTANCE_Z = 10;
 
-    public static final boolean ENABLED_SPAWNING = false;
+    public static boolean ENABLED_SPAWNING = false;
 
 }

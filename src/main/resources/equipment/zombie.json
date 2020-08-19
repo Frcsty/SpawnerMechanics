@@ -17,7 +17,7 @@
     },
     "boots": {
       "slot": "BOOTS",
-      "material": "LEATHER_BOOTS",
+      "material": 301,
       "data": 0
     }
   }

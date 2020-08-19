@@ -65,35 +65,32 @@ public final class SpawnerBreakListener implements Listener {
     }
 
     private int handleAmount(final Block broken, final Player player, final Spawner spawner, final BlockBreakEvent event, final SpawnerLocation location) {
-        final boolean stack = player.isSneaking();
-        final TaxHolder holder = wrapper.getTaxHandler().handle(player, spawner, stack);
+        final TaxHolder holder = wrapper.getTaxHandler().handle(player, spawner);
 
-        int amount = 0;
-        int remaining = 0;
+        int amount;
         if (holder != null) {
             amount = holder.getAmount();
-            remaining = holder.getRemaining();
 
             if (amount == 0) {
                 player.sendMessage("You can not afford to pick-up a spawner.");
                 event.setCancelled(true);
                 return 0;
             }
+        } else {
+            amount = 1;
         }
 
-        if (remaining == 0) {
+        if (spawner.getStack() == 1) {
             broken.setType(Material.AIR);
             wrapper.removeSpawner(location);
             spawner.setAmount(-1);
-        }
-
-        if (remaining >= 1) {
+        } else {
+            event.setCancelled(true);
             wrapper.removeSpawner(location);
-            spawner.removeAmount(amount);
+            spawner.removeAmount(1);
             wrapper.setSpawner(location, spawner);
         }
-
-        wrapper.updateHologram(location, spawner, remaining >= 1);
+        wrapper.updateHologram(location, spawner, spawner.getStack() - 1 < 0);
         return amount;
     }
 }
