@@ -73,4 +73,8 @@ public final class TaxHandler {
     private boolean hasBypass(final Player player) {
         return player.hasPermission("districtspawners.tax.bypass");
     }
+
+    public Economy getEconomy() {
+        return economy;
+    }
 }

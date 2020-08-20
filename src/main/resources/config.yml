@@ -18,7 +18,119 @@ spawner-information:
         - ''
         - "&f&lTIP: &7Go outside, it's nice today :D"
       slot: 4
+      amount: 1
       material: 386
+      data: 0
+    stack-remove:
+      display: '&c&lRemove Stack'
+      lore:
+        - ''
+        - '&e&lDescription'
+        - ' &7&o"Click to pick-up a certain amount'
+        - ' &7&oof spawners from this stack"'
+        - ''
+      slot: 1
+      amount: 1
+      material: 160
+      data: 13
+      menu:
+        title: '> Remove Stack'
+        size: 1
+        items:
+          info:
+            display: '&c&lINFORMATION: &7Remove Spawners'
+            lore:
+              - ''
+              - '&c&lDetails:'
+              - ' &7&o"Select how many spawners you wish to'
+              - ' &7&opick-up, beware of the pick-up tax!"'
+              - ''
+              - '&c&lInformation:'
+              - '&6* &7This spawner stack is worth &a${stack-value} &7value.'
+              - '&6* &7There are &f{stack-amount} Spawner(s) &7in this stack.'
+              - ''
+            slot: 4
+            amount: 1
+            material: 386
+            data: 0
+          remove-1:
+            display: '&c&lINFORMATION: &7Remove 1 Spawner'
+            lore:
+              - ''
+              - '&c&lDetails:'
+              - ' &7&o"Click to remove &f1 Spawner &7&ofrom'
+              - ' &7&othe entire stack"'
+              - ''
+              - '&c&lInformation:'
+              - '&6* &7Cost: &a${spawner-value}'
+              - ''
+            slot: 1
+            amount: 1
+            material: 160
+            data: 14
+            value: 1
+          remove-8:
+            display: '&c&lINFORMATION: &7Remove 8 Spawners'
+            lore:
+              - ''
+              - '&c&lDetails:'
+              - ' &7&o"Click to remove &f8 Spawners &7&ofrom'
+              - ' &7&othe entire stack"'
+              - ''
+              - '&c&lInformation:'
+              - '&6* &7Cost: &a${spawner-value}'
+              - ''
+            slot: 2
+            amount: 1
+            material: 160
+            data: 14
+            value: 8
+          remove-16:
+            display: '&c&lINFORMATION: &7Remove 16 Spawners'
+            lore:
+              - ''
+              - '&c&lDetails:'
+              - ' &7&o"Click to remove &f16 Spawners &7&ofrom'
+              - ' &7&othe entire stack"'
+              - ''
+              - '&c&lInformation:'
+              - '&6* &7Cost: &a${spawner-value}'
+              - ''
+            slot: 6
+            amount: 1
+            material: 160
+            data: 14
+            value: 16
+          remove-all:
+            display: '&c&lINFORMATION: &7Remove All Spawners'
+            lore:
+              - ''
+              - '&c&lDetails:'
+              - ' &7&o"Click to remove &fAll Spawners &7&ofrom'
+              - ' &7&othe entire stack"'
+              - ''
+              - '&c&lInformation:'
+              - '&6* &7Cost: &a${stack-value}'
+              - ''
+            slot: 7
+            amount: 1
+            material: 160
+            data: 14
+            value: 0
+    stack-add:
+      display: '&a&lAdd Stack'
+      lore:
+        - ''
+        - '&e&lDescription'
+        - ' &7&o"Click to add a certain amount'
+        - ' &7&oof spawners to this stack"'
+        - ''
+      slot: 7
+      amount: 1
+      material: 160
+      data: 3
+      menu:
+
 
 word-variables:
   - 'exp;{num1} - {num2} Experience'

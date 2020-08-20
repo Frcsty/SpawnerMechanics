@@ -45,7 +45,7 @@ public final class SpawnerStackListener implements Listener {
         }
 
         if (item == null || item.getType() != Material.MOB_SPAWNER) {
-            Bukkit.getPluginManager().callEvent(new SpawnerInteractEvent(spawner, item, player));
+            Bukkit.getPluginManager().callEvent(new SpawnerInteractEvent(spawner, location, item, player));
             return;
         }
 
